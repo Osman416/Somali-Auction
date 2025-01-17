@@ -1,9 +1,7 @@
-import { auth } from "@/auth";
+import { ItemCard } from "@/app/item-card";
 import { database } from "@/db/database";
 
 export default async function HomePage() {
-  const session = await auth();
-
   const allItems = await database.query.items.findMany();
 
   return (
@@ -12,10 +10,7 @@ export default async function HomePage() {
 
       <div className="grid grid-cols-4 gap-8">
         {allItems.map((item) => (
-          <div key={item.id} className="border p-8 rounded-xl">
-            {item.name}
-            starting price: ${item.startingPrice / 100}
-          </div>
+          <ItemCard key={item.id} item={item} />
         ))}
       </div>
     </main>
