@@ -74,6 +74,7 @@ export const items = pgTable("sa_item", {
   name: text("name").notNull(),
   fileKey: text("fileKey").notNull(),
   startingPrice: integer("startingPrice").notNull().default(0),
+  bidInterval: integer("bidInterval").notNull().default(100), // IF OVER $50 Bid Interval Changes to $5. AND IF OVER $100 Changes to $10
 });
 
 export type Item = typeof items.$inferSelect;
