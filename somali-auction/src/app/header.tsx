@@ -14,7 +14,7 @@ import { useRef, useState } from "react";
 
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
-  const notifButtonRef = useRef<HTMLButtonElement>(null);
+  const notifButtonRef = useRef(null);
   const session = useSession();
 
   const userId = session?.data?.user?.id;
@@ -25,7 +25,7 @@ export function Header() {
         <div className="flex items-center gap-12">
           <Link href="/" className="hover:underline flex items-center gap-1">
             <Image src="/logo.jpg" width="50" height="50" alt="Logo" />
-            BidBuddy.com
+            SomaliAuctions.com
           </Link>
 
           <div className="flex items-center gap-8">
@@ -57,10 +57,10 @@ export function Header() {
             <>
               <NotificationIconButton
                 ref={notifButtonRef}
-                onClick={() => setIsVisible(!isVisible)}
+                onClick={(e) => setIsVisible(!isVisible)}
               />
               <NotificationFeedPopover
-                buttonRef={notifButtonRef as React.RefObject<HTMLElement>}
+                buttonRef={notifButtonRef}
                 isVisible={isVisible}
                 onClose={() => setIsVisible(false)}
                 renderItem={({ item, ...props }) => (
@@ -71,11 +71,11 @@ export function Header() {
                         onClick={() => {
                           setIsVisible(false);
                         }}
-                        href={item.data ? `/items/${item.data.itemId}` : "#"}
+                        href={`/items/${item.data.itemId}`}
                       >
                         Someone outbidded you on{" "}
-                        <span className="font-bold">{item.data?.itemName}</span>{" "}
-                        {item.data && `by ${formatToDollar(item.data.bidAmount)}`}
+                        <span className="font-bold">{item.data.itemName}</span>{" "}
+                        by ${formatToDollar(item.data.bidAmount)}
                       </Link>
                     </div>
                   </NotificationCell>

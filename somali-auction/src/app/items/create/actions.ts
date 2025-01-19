@@ -14,10 +14,12 @@ export async function createItemAction({
   fileName,
   name,
   startingPrice,
+  endDate,
 }: {
   fileName: string;
   name: string;
   startingPrice: number;
+  endDate: Date;
 }) {
   const session = await auth();
 
@@ -31,12 +33,14 @@ export async function createItemAction({
     throw new Error("Unauthorized");
   }
 
-await database.insert(items).values({
+  await database.insert(items).values({
     name,
     startingPrice,
     fileKey: fileName,
+    currentBid: startingPrice,
     userId: user.id,
-})
+    endDate,
+  });
 
   redirect("/");
 }

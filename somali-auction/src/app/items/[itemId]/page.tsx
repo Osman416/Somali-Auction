@@ -1,9 +1,12 @@
 import { createBidAction } from "@/app/items/[itemId]/actions";
 import { auth } from "@/auth";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getBidsForItem } from "@/data-access/bids";
 import { getItem } from "@/data-access/items";
+import { bids, users } from "@/db/schema";
 import { pageTitleStyles } from "@/styles";
+import { isBidOver } from "@/util/bids";
 import { formatToDollar } from "@/util/currency";
 import { getImageUrl } from "@/util/files";
 import { formatDistance } from "date-fns/formatDistance";
@@ -26,7 +29,7 @@ export default async function ItemPage({
   if (!item) {
     return (
       <div className="space-y-8 flex flex-col items-center mt-12">
-        <Image src="/package.svg" width="200" height="200" alt="Package" />
+        <Image src="/404.svg" width="200" height="200" alt="404" />
 
         <h1 className={pageTitleStyles}>Item not found</h1>
         <p className="text-center">
@@ -46,7 +49,8 @@ export default async function ItemPage({
 
   const hasBids = allBids.length > 0;
 
-  const canPlaceBid = session && item.userId !== session.user.id;
+  const canPlaceBid =
+    session && item.userId !== session.user.id && !isBidOver(item);
 
   return (
     <main className="space-y-8">
@@ -55,6 +59,12 @@ export default async function ItemPage({
           <h1 className={pageTitleStyles}>
             <span className="font-normal">Auction for</span> {item.name}
           </h1>
+          {isBidOver(item) && (
+            <Badge className="w-fit" variant="destructive">
+              Bidding Over
+            </Badge>
+          )}
+
           <Image
             className="rounded-xl"
             src={getImageUrl(item.fileKey)}
@@ -113,10 +123,10 @@ export default async function ItemPage({
           ) : (
             <div className="flex flex-col items-center gap-8 bg-gray-100 rounded-xl p-12">
               <Image
-                src="/package.svg"
+                src="/404.svg"
                 width="200"
                 height="200"
-                alt="Package"
+                alt="404"
               />
               <h2 className="text-2xl font-bold">No bids yet</h2>
               {canPlaceBid && (
